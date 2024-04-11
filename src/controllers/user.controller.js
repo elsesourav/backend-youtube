@@ -2,27 +2,29 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 import Valid from "../utils/validation.js";
-import { uploadOnCloudinary } from "../utils/uploadOnCloudinary.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
 const registerUser = asyncHandler(async (req, res) => {
    // get data from frontend
    const { username, password, fullName, email } = req.body;
 
+   console.log(username, password, fullName, email);
    // check fields validation
    if (
       [username, password, fullName, email].some(
-         (field) => field?.trim() !== ""
+         (field) => field?.trim() === ""
       )
    ) {
       throw new ApiError(400, "Please fill all the fields");
    }
 
+   console.log(Valid.username(username), Valid.password(password), Valid.email(email), Valid.fullName(fullName));
    if (
-      Valid.username(username) ||
-      Valid.password(password) ||
-      Valid.email(email) ||
-      Valid.fullName(fullName)
+      !Valid.username(username) ||
+      !Valid.password(password) ||
+      !Valid.email(email) ||
+      !Valid.fullName(fullName)
    ) {
       throw new ApiError(400, "Please give valid fields");
    }
